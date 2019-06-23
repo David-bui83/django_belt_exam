@@ -32,9 +32,11 @@ def register(request):
 
 # Dashboard
 def dashboard(request):
+  # Checking to see if is signed in
   if not 'user_id' in request.session:
     return redirect('/')
 
+  # Display trips on dashboard
   context = {
     'user': User.objects.get(id=request.session['user_id']),
     'trips': Trip.objects.all().filter(user_creates=request.session['user_id']),
@@ -83,6 +85,11 @@ def trip_create(request):
 
 # Edit page
 def trip_edit(request, id):
+  # Prevent non-owner trip from making edit
+  trip = Trip.objects.get(id=id)
+  if trip.user_creates.id != request.session['user_id']:
+    return redirect('/dashboard')
+
   start = Trip.objects.get(id=id)
   context ={
     'trip': Trip.objects.get(id=id),
@@ -94,6 +101,12 @@ def trip_edit(request, id):
 
 # Make edit to trip
 def make_edit(request, id):
+
+  # Prevent non-owner trip from making edit
+  trip = Trip.objects.get(id=id)
+  if trip.user_creates.id != request.session['user_id']:
+    return redirect('/dashboard')
+
   errors = Trip.objects.trip_validator(request.POST)
 
   if len(errors) > 0:
