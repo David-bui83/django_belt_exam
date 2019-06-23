@@ -34,11 +34,12 @@ def register(request):
 def dashboard(request):
   if not 'user_id' in request.session:
     return redirect('/')
-  
+
   context = {
     'user': User.objects.get(id=request.session['user_id']),
-    'trips': Trip.objects.filter(user_creates=User.objects.get(id=request.session['user_id'])),
-    'others': Trip.objects.exclude(user_creates=User.objects.get(id=request.session['user_id']))
+    'trips': Trip.objects.all().filter(user_creates=request.session['user_id']),
+    'joins': Trip.objects.filter(user_travels=request.session['user_id']),
+    'others': Trip.objects.all().exclude(user_travels=request.session['user_id']).exclude(user_creates=request.session['user_id'])
   }
 
   return render(request, 'trip_buddy/dashboard.html', context)
@@ -114,9 +115,12 @@ def view_trip(request, id):
   trip_creator = trip.user_creates
   travelers = trip.user_travels
   
+ 
   context = {
     'user': User.objects.get(id=request.session['user_id']),
     'trip': Trip.objects.get(id=id),
+    'sd': trip.start_date.date(),
+    'ed': trip.end_date.date(),
     'joins': travelers.exclude(travel_trips__id=trip_creator.id)
   }
   return render(request, 'trip_buddy/view_trip.html',context)
@@ -127,11 +131,17 @@ def join_trip(request, id):
   trip = Trip.objects.get(id=id)
   user = User.objects.get(id=request.session['user_id'])
   trip.user_travels.add(user)
-  
-  return redirect('/trips/' + str(id))
+  print(trip)
+  return redirect('/dashboard')
 
-# delete a trip
+# Unjoin a trip
 def remove_trip(request, id):
+  trip = Trip.objects.get(id=id)
+  trip.user_travels.remove(User.objects.get(id=request.session['user_id']))
+  return redirect('/dashboard')
+
+# Delete a trip
+def delete_trip(request, id):
   trip = Trip.objects.get(id=id)
   trip.delete()
   return redirect('/dashboard')

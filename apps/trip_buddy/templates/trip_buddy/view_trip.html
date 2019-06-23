@@ -23,10 +23,10 @@
     <h3>Hello {{user.first_name}}! Read about this Trip!</h3>
     <h5>{{trip.destination}}</h5>
     <div class="jumbotron bg-dark text-white-50 col-6">
-      <p>Start date: {{trip.start_date}}</p>
-      <p>End date: {{trip.end_date}}</p>
-      <p>Created date: {{trip.created_at}}</p>
-      <p>Last Updated: {{trip.updated_at}}</p>
+      <p>Start date: {{sd}}</p>
+      <p>End date: {{ed}}</p>
+      <p>Created date: {{trip.created_at | date:'m-d-Y'}}</p>
+      <p>Last Updated: {{trip.updated_at | date:'m-d-Y'}}</p>
       <p>Plan: {{trip.plan}}</p>
       <p>Created by: {{trip.user_creates.first_name}}</p>
     </div>

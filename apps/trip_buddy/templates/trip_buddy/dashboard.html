@@ -40,14 +40,26 @@
         {% for trip in trips%}
         <tr>
           <td><a href="/trips/{{trip.id}}">{{trip.destination}}</a></td>
-          <td>{{trip.start_date}}</td>
-          <td>{{trip.end_date}}</td>
+          <td>{{trip.start_date | date:'m-d-Y'}}</td>
+          <td>{{trip.end_date | date:'m-d-Y'}}</td>
           <td>{{trip.plan}}</td>
           <td>
-            <a href="/remove/{{trip.id}}">Remove</a> | <a href="/trips/edit/{{trip.id}}">Edit</a>
+            <a href="/delete/{{trip.id}}">Remove</a> | <a href="/trips/edit/{{trip.id}}">Edit</a>
           </td>
         </tr>
         {% endfor %}
+        {% for join in joins%}
+        <tr>
+          <td><a href="/trips/{{join.id}}">{{join.destination}}</a></td>
+          <td>{{join.start_date | date:'m-d-Y'}}</td>
+          <td>{{join.end_date | date:'m-d-Y'}}</td>
+          <td>{{join.plan}}</td>
+          <td>
+            <a href="/remove/{{join.id}}">Cancel</a>
+          </td>
+        </tr>
+        {% endfor %}
+
       </tbody>
     </table>
     <h3>Other people's trips:</h3>
@@ -65,8 +77,8 @@
           {% for other in others%}
           <tr>
             <td><a href="/trips/{{other.id}}">{{other.destination}}</a></td>
-            <td>{{other.start_date}}</td>
-            <td>{{other.end_date}}</td>
+            <td>{{other.start_date | date:'m-d-Y'}}</td>
+            <td>{{other.end_date | date:'m-d-Y'}}</td>
             <td>{{other.plan}}</td>
             <td>
               <a href="/join/{{other.id}}">Join</a>

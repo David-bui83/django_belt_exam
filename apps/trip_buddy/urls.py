@@ -13,5 +13,6 @@ urlpatterns = [
   url(r'^trips/(?P<id>\d+)/make_edit$',views.make_edit),
   url(r'^trips/(?P<id>\d+)$',views.view_trip),
   url(r'^remove/(?P<id>\d+)$',views.remove_trip),
-  url(r'^join/(?P<id>\d+)$', views.join_trip)
+  url(r'^join/(?P<id>\d+)$', views.join_trip),
+  url(r'^delete/(?P<id>\d+)$', views.delete_trip)
 ]
