@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
-from apps.trip_buddy.models import *
+from apps.trip_buddy.models import User, Trip
 from django.contrib import messages
 from datetime import datetime
 import bcrypt
@@ -12,6 +12,7 @@ def index(request):
 def register(request):
 
   errors = User.objects.basic_validator(request.POST)
+  print(errors)
   exist = User.objects.filter(email=request.POST['email'])
 
   if exist:
@@ -21,7 +22,7 @@ def register(request):
   if len(errors) > 0:
     for key, value in errors.items():
       messages.error(request, value)
-      return redirect('/')
+    return redirect('/')
   else:
     hashed_pass = bcrypt.hashpw(request.POST['password'].encode(),bcrypt.gensalt())
     User.objects.create(first_name=request.POST['first_name'],last_name=request.POST['last_name'],email=request.POST['email'],password=hashed_pass)
@@ -35,11 +36,11 @@ def dashboard(request):
   # Checking to see if is signed in
   if not 'user_id' in request.session:
     return redirect('/')
-
+  print(Trip.objects.filter(user_creates=request.session['user_id']))
   # Display trips on dashboard
   context = {
     'user': User.objects.get(id=request.session['user_id']),
-    'trips': Trip.objects.all().filter(user_creates=request.session['user_id']),
+    'trips': Trip.objects.filter(user_creates=request.session['user_id']),
     'joins': Trip.objects.filter(user_travels=request.session['user_id']),
     'others': Trip.objects.all().exclude(user_travels=request.session['user_id']).exclude(user_creates=request.session['user_id'])
   }
@@ -71,12 +72,19 @@ def trip_new(request):
 
 # Create trip
 def trip_create(request):
+  
+  if not request.POST['start_date']:
+    messages.error(request, 'Need to have a start date')
+    return redirect('/trips/new')
+  if not request.POST['end_date']:
+    messages.error(request, 'Need to have an end date')
+    return redirect('/trips/new')
   errors = Trip.objects.trip_validator(request.POST)
-
+  print(errors)
   if len(errors) > 0:
     for key, value in errors.items():
       messages.error(request, value)
-      return redirect('/trips/new')
+    return redirect('/trips/new')
   else:
     
     new_trip = Trip.objects.create(destination=request.POST['destination'],user_creates=User.objects.get(id=request.session['user_id']),start_date=request.POST['start_date'],end_date=request.POST['end_date'],plan=request.POST['plan'])
@@ -112,7 +120,7 @@ def make_edit(request, id):
   if len(errors) > 0:
     for key, value in errors.items():
       messages.error(request, value)
-      return redirect('/trips/edit/'+ str(id))
+    return redirect('/trips/edit/'+ str(id))
   else:
     trip = Trip.objects.get(id=id)
     trip.destination = request.POST['destination']

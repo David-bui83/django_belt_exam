@@ -41,7 +41,7 @@ class TripManager(models.Manager):
     if len(postData['destination']) < 3:
       errors['destination'] = 'Destination must be at least 3 characters'
     if datetime.strptime(postData['start_date'],'%Y-%m-%d') < today:
-      errors['date'] = 'Start date needs to be in the future'
+      errors['start_date'] = 'Start date needs to be in the future'
     if postData['start_date'] > postData['end_date']:
       errors['destination'] = 'Invalid start and end date'
     if len(postData['plan']) < 3:
