@@ -134,15 +134,13 @@ def make_edit(request, id):
 def view_trip(request, id):
   trip = Trip.objects.get(id=id)
   trip_creator = trip.user_creates
-  travelers = trip.user_travels
-  
- 
+
   context = {
     'user': User.objects.get(id=request.session['user_id']),
-    'trip': Trip.objects.get(id=id),
+    'trip': trip,
     'sd': trip.start_date.date(),
     'ed': trip.end_date.date(),
-    'joins': travelers.exclude(travel_trips=trip_creator.id)
+    'joins': trip.user_travels.exclude(travel_trips=trip_creator.id)
   }
   return render(request, 'trip_buddy/view_trip.html',context)
 

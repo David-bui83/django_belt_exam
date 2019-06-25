@@ -30,12 +30,12 @@
       <p>Plan: {{trip.plan}}</p>
       <p>Created by: {{trip.user_creates.first_name}}</p>
     </div>
-    <div class="jumbotron">
+    <div class="jumbotron col-6 bg-dark text-white-50">
       <h3>People who've joined the trip</h3>
-      
-      <ul>
+      <hr class="bg-secondary">
+      <ul style="list-style-type: none;">
         {% for join in joins %}
-          <li>{{ join.first_name}}</li>
+          <li>{{ join.first_name}} {{join.last_name}}</li>
         {% endfor %}
       </ul>
     </div>
