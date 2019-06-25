@@ -142,7 +142,7 @@ def view_trip(request, id):
     'trip': Trip.objects.get(id=id),
     'sd': trip.start_date.date(),
     'ed': trip.end_date.date(),
-    'joins': travelers.exclude(travel_trips__id=trip_creator.id)
+    'joins': travelers.exclude(travel_trips=trip_creator.id)
   }
   return render(request, 'trip_buddy/view_trip.html',context)
 
